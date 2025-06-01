@@ -137,7 +137,7 @@ browser-agent \
   --url "http://localhost:3001" \
   --task "Review the website and share suggestions on what can be improved" \
   --logs-path "./custom/logs" \
-  --use-vision
+  --use-vision \
   --headless
 ```
 
