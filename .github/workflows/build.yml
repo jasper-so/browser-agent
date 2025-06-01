@@ -65,13 +65,18 @@ jobs:
         with:
           path: artifacts
 
+      - name: Debug - List artifact contents
+        run: |
+          echo "Listing artifacts directory contents:"
+          ls -R artifacts/
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/browser-agent-linux/browser-agent
-            artifacts/browser-agent-macos/browser-agent
+            artifacts/browser-agent-linux/browser-agent-linux
+            artifacts/browser-agent-macos/browser-agent-macos
           generate_release_notes: true
           draft: false
           prerelease: false
