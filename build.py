@@ -34,11 +34,8 @@ def build_executable():
     
     # Add architecture-specific options
     if target_arch == 'arm64':
-        # For ARM64, we need to ensure we're using the right Python interpreter
-        # and libraries. This assumes you have a Python interpreter built for ARM64
         pyinstaller_opts.extend([
-            '--target-arch', 'aarch64',
-            '--target-platform', 'linux',
+            '--target-architecture', 'aarch64',
         ])
     
     # Add the main script
