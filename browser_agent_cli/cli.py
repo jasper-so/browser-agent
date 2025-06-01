@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from langchain_openai import ChatOpenAI
-from browser_use import Agent
+from browser_use import Agent, BrowserProfile, BrowserSession
 from dotenv import load_dotenv
 import asyncio
 import argparse
@@ -21,9 +21,11 @@ def parse_args():
                       help='OpenAI model to use (default: gpt-4)')
     parser.add_argument('--use-vision', action='store_true',
                       help='Enable vision capabilities')
+    parser.add_argument('--headless', action='store_true',
+                      help='Run the browser in headless mode')
     return parser.parse_args()
 
-async def run_agent(url: str, task: str, logs_path: str, model: str, use_vision: bool):
+async def run_agent(url: str, task: str, logs_path: str, model: str, use_vision: bool, headless: bool):
     llm = ChatOpenAI(model=model)
     
     initial_actions = [
@@ -33,13 +35,27 @@ async def run_agent(url: str, task: str, logs_path: str, model: str, use_vision:
     # Ensure logs directory exists
     os.makedirs(os.path.dirname(logs_path), exist_ok=True)
 
+    browser_profile = BrowserProfile(
+        headless=headless,
+        viewport={"width": 1280, "height": 1100},
+        locale='en-US',
+        user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+        viewport_expansion=500,
+    )
+
+    browser_session = BrowserSession(
+        browser_profile=browser_profile,
+    )
+
     agent = Agent(
         task=task,
         llm=llm,
         initial_actions=initial_actions,
         use_vision=use_vision,
         save_conversation_path=logs_path,
+        browser_session=browser_session,
     )
+
     result = await agent.run()
     print(result)
 
@@ -51,7 +67,8 @@ def main():
             task=args.task,
             logs_path=args.logs_path,
             model=args.model,
-            use_vision=args.use_vision
+            use_vision=args.use_vision,
+            headless=args.headless
         ))
     except KeyboardInterrupt:
         print("\nOperation cancelled by user")
