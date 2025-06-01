@@ -30,11 +30,6 @@ dependencies = [
     "playwright",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pyinstaller",  # Only needed for building the executable
-]
-
 [project.scripts]
 browser-agent = "browser_agent_cli.cli:main"
 
