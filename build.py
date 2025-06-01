@@ -14,9 +14,9 @@ def build_executable():
     if os.path.exists('build'):
         shutil.rmtree('build')
     
-    # Build the executable
+    # Build the executable using uv run
     subprocess.run([
-        'pyinstaller',
+        'uv', 'run', 'pyinstaller',
         '--onefile',  # Create a single executable
         '--name', 'browser-agent-arm64',
         '--clean',  # Clean PyInstaller cache
