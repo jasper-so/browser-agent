@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        architecture: [amd64, arm64]
 
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +25,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential
+          if [ "${{ matrix.architecture }}" = "arm64" ]; then
+            sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          fi
 
       - name: Install Python dependencies
         run: |
@@ -29,12 +35,17 @@ jobs:
           pip install -e .[dev]
 
       - name: Build executable
-        run: python build.py
+        run: |
+          if [ "${{ matrix.architecture }}" = "arm64" ]; then
+            export CC=aarch64-linux-gnu-gcc
+            export CXX=aarch64-linux-gnu-g++
+          fi
+          python build.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: browser-agent-ubuntu
+          name: browser-agent-ubuntu-${{ matrix.architecture }}
           path: dist/browser-agent
           if-no-files-found: error
 
@@ -56,7 +67,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/browser-agent-ubuntu/browser-agent
+            artifacts/browser-agent-ubuntu-amd64/browser-agent
+            artifacts/browser-agent-ubuntu-arm64/browser-agent
           generate_release_notes: true
           draft: false
           prerelease: false
