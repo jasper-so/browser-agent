@@ -17,8 +17,8 @@ def parse_args():
                       help='Task description for the agent')
     parser.add_argument('--logs-path', type=str, default='./logs/conversation',
                       help='Path to save conversation logs (default: ./logs/conversation)')
-    parser.add_argument('--model', type=str, default='gpt-4',
-                      help='OpenAI model to use (default: gpt-4)')
+    parser.add_argument('--model', type=str, default='gpt-4o',
+                      help='OpenAI model to use (default: gpt-4o)')
     parser.add_argument('--use-vision', action='store_true',
                       help='Enable vision capabilities')
     parser.add_argument('--headless', action='store_true',

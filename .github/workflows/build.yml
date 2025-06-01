@@ -37,7 +37,7 @@ jobs:
               uv sync && \
               uv pip install pyinstaller && \
               pyinstaller \
-                --onefile \
+                --onedir \
                 --name=browser-agent \
                 --clean \
                 --add-data=browser_agent_cli:browser_agent_cli \
