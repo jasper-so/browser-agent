@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [amd64, arm64]
+        architecture: [arm64]
 
     steps:
       - uses: actions/checkout@v4
@@ -28,6 +28,7 @@ jobs:
             -v ${{ github.workspace }}:/app \
             -w /app python:3.11 bash -c "\
               curl -LsSf https://astral.sh/uv/install.sh | sh && \
+              export PATH=\"/root/.local/bin:$PATH\" && \
               uv pip install -e .[dev] && \
               python build.py && \
               cp dist/browser-agent /app/browser-agent-ubuntu-${{ matrix.architecture }}"
