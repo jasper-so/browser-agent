@@ -94,8 +94,11 @@ RUN chmod +x /usr/local/bin/browser-agent
 git clone <your-repo-url>
 cd browser-agent-cli
 
+# Install uv if you haven't already
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
 # Install in development mode
-pip install -e .[dev]
+uv pip install -e .[dev]
 
 # Install Playwright browsers
 playwright install chromium
@@ -107,7 +110,7 @@ To build executables locally:
 
 ```bash
 # Install development dependencies
-pip install -e .[dev]
+uv pip install -e .[dev]
 
 # Build executable
 python build.py

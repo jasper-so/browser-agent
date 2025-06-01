@@ -27,7 +27,8 @@ jobs:
           docker run --rm --platform linux/${{ matrix.architecture }} \
             -v ${{ github.workspace }}:/app \
             -w /app python:3.11 bash -c "\
-              pip install -e .[dev] && \
+              curl -LsSf https://astral.sh/uv/install.sh | sh && \
+              uv pip install -e .[dev] && \
               python build.py && \
               cp dist/browser-agent /app/browser-agent-ubuntu-${{ matrix.architecture }}"
 
