@@ -41,12 +41,13 @@ jobs:
             export CXX=aarch64-linux-gnu-g++
           fi
           python build.py
+          mv dist/browser-agent dist/browser-agent-ubuntu-${{ matrix.architecture }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: browser-agent-ubuntu-${{ matrix.architecture }}
-          path: dist/browser-agent
+          path: dist/browser-agent-ubuntu-${{ matrix.architecture }}
           if-no-files-found: error
 
   release:
@@ -62,18 +63,13 @@ jobs:
         with:
           path: artifacts
 
-      - name: Debug - List artifact contents
-        run: |
-          echo "Listing artifacts directory contents:"
-          ls -R artifacts/
-
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/browser-agent-ubuntu-amd64/browser-agent
-            artifacts/browser-agent-ubuntu-arm64/browser-agent
+            artifacts/browser-agent-ubuntu-amd64/browser-agent-ubuntu-amd64
+            artifacts/browser-agent-ubuntu-arm64/browser-agent-ubuntu-arm64
           generate_release_notes: true
           draft: false
           prerelease: false
