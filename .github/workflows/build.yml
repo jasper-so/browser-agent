@@ -28,10 +28,7 @@ jobs:
 
       - name: Install dependencies  
         run: |  
-          uv sync  
-          uv add pyinstaller  
-          uv add playwright  
-          uv run playwright install chromium  
+          uv sync --dev
 
       - name: Build executable
         run: |
