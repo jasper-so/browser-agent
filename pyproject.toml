@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling>=1.18.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "browser-agent-cli"
+version = "0.1.0"
+description = "A CLI tool for browser automation using browser-use"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Neil Chen", email = "neil@vela.studio" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "browser-use",
+    "langchain-openai",
+    "python-dotenv",
+    "playwright",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pyinstaller",  # Only needed for building the executable
+]
+
+[project.scripts]
+browser-agent = "browser_agent_cli.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["browser_agent_cli"]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"browser_agent_cli/py.typed" = "browser_agent_cli/py.typed" 
