@@ -16,38 +16,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential
-          if [ "${{ matrix.architecture }}" = "arm64" ]; then
-            sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-          fi
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Install Python dependencies
+      - name: Build executable for ${{ matrix.architecture }}
         run: |
-          python -m pip install --upgrade pip
-          pip install -e .[dev]
-
-      - name: Build executable
-        run: |
-          if [ "${{ matrix.architecture }}" = "arm64" ]; then
-            export CC=aarch64-linux-gnu-gcc
-            export CXX=aarch64-linux-gnu-g++
-          fi
-          python build.py
-          mv dist/browser-agent dist/browser-agent-ubuntu-${{ matrix.architecture }}
+          docker run --rm --platform linux/${{ matrix.architecture }} \
+            -v ${{ github.workspace }}:/app \
+            -w /app python:3.11 bash -c "\
+              pip install -e .[dev] && \
+              python build.py && \
+              cp dist/browser-agent /app/browser-agent-ubuntu-${{ matrix.architecture }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: browser-agent-ubuntu-${{ matrix.architecture }}
-          path: dist/browser-agent-ubuntu-${{ matrix.architecture }}
+          path: browser-agent-ubuntu-${{ matrix.architecture }}
           if-no-files-found: error
 
   release:
