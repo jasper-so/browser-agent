@@ -31,7 +31,7 @@ jobs:
             -v ${{ github.workspace }}:/app \
             -w /app python:3.11 bash -c "\
               curl -Ls https://astral.sh/uv/install.sh | bash && \
-              source $HOME/.local/bin/env && \
+              source /root/.local/bin/env && \
               uv venv .venv && \
               source .venv/bin/activate && \
               uv sync && \
