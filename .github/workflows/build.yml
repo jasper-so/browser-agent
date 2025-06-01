@@ -8,23 +8,22 @@ on:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+
     strategy:
       matrix:
         include:  
-          - os: ubuntu-latest  
-            arch: arm64  
+          - arch: arm64
             target: ubuntu-arm64  
-
-    runs-on: ${{ matrix.os }} 
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5  
-        with:  
-          python-version: "3.11"
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-      - uses: astral-sh/setup-uv@v5
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Install dependencies  
         run: |  
@@ -33,15 +32,23 @@ jobs:
           uv sync
           uv pip install pyinstaller
 
-      - name: Build executable
+      - name: Build executable for ${{ matrix.target }}
         run: |
-          source .venv/bin/activate
-          pyinstaller \
-            --onefile \
-            --name=browser-agent-${{ matrix.target }} \
-            --clean \
-            --add-data=browser_agent_cli:browser_agent_cli \
-            browser_agent_cli/cli.py
+          docker run --rm --platform linux/${{ matrix.arch }} \
+            -v ${{ github.workspace }}:/app \
+            -w /app python:3.11 bash -c "\
+              curl -Ls https://astral.sh/uv/install.sh | bash && \
+              export PATH=$HOME/.cargo/bin:$PATH && \
+              uv venv .venv && \
+              source .venv/bin/activate && \
+              uv sync && \
+              uv pip install pyinstaller && \
+              pyinstaller \
+                --onefile \
+                --name=browser-agent-${{ matrix.target }} \
+                --clean \
+                --add-data=browser_agent_cli:browser_agent_cli \
+                browser_agent_cli/cli.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
