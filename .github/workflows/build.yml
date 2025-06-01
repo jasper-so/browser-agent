@@ -8,16 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        # os: [ubuntu-latest, macos-latest]
-        os: [ubuntu-latest]
-        include:
-          - os: ubuntu-latest
-            artifact_name: browser-agent-linux
-          - os: macos-latest
-            artifact_name: browser-agent-macos
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -27,16 +18,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Ubuntu dependencies
-        if: matrix.os == 'ubuntu-latest'
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential
-
-      - name: Install macOS dependencies
-        if: matrix.os == 'macos-latest'
-        run: |
-          brew install openssl
 
       - name: Install Python dependencies
         run: |
@@ -49,7 +34,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact_name }}
+          name: browser-agent-ubuntu
           path: dist/browser-agent
           if-no-files-found: error
 
@@ -61,23 +46,17 @@ jobs:
       contents: write
 
     steps:
-      - name: Download all artifacts
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-
-      - name: Debug - List artifact contents
-        run: |
-          echo "Listing artifacts directory contents:"
-          ls -R artifacts/
 
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/browser-agent-linux/browser-agent
-            artifacts/browser-agent-macos/browser-agent
+            artifacts/browser-agent-ubuntu/browser-agent
           generate_release_notes: true
           draft: false
           prerelease: false
