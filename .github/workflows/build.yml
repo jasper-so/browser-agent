@@ -41,7 +41,7 @@ jobs:
                 --name=browser-agent-${{ matrix.target }} \
                 --clean \
                 --add-data=browser_agent_cli:browser_agent_cli \
-                browser_agent_cli/cli.py
+                browser_agent_cli/cli.py"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
