@@ -25,13 +25,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Install dependencies  
-        run: |  
-          uv venv
-          source .venv/bin/activate
-          uv sync
-          uv pip install pyinstaller
-
       - name: Build executable for ${{ matrix.target }}
         run: |
           docker run --rm --platform linux/${{ matrix.arch }} \
