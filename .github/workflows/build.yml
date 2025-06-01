@@ -34,8 +34,9 @@ jobs:
           uv run playwright install chromium  
 
       - name: Build executable
-        run: python build.py
-        mv dist/browser-agent dist/browser-agent-${{ matrix.target }}
+        run: |
+          python build.py
+          mv dist/browser-agent dist/browser-agent-${{ matrix.target }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
