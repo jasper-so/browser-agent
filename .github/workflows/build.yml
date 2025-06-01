@@ -70,8 +70,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/browser-agent-linux
-            artifacts/browser-agent-macos
+            artifacts/browser-agent-linux/browser-agent
+            artifacts/browser-agent-macos/browser-agent
           generate_release_notes: true
           draft: false
           prerelease: false
