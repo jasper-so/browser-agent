@@ -18,17 +18,16 @@ def build_executable():
     subprocess.run([
         'pyinstaller',
         '--onefile',  # Create a single executable
-        '--name', 'browser-agent',
+        '--name', 'browser-agent-arm64',
         '--clean',  # Clean PyInstaller cache
         '--add-data', 'browser_agent_cli:browser_agent_cli',  # Include package data
         'browser_agent_cli/cli.py',  # Main script
     ], check=True)
     
-    print("\nBuild completed! Executable is available at: dist/browser-agent")
-    print("\nTo install in a Docker container, copy the executable to /usr/local/bin/")
-    print("Example:")
-    print("  COPY dist/browser-agent /usr/local/bin/")
-    print("  RUN chmod +x /usr/local/bin/browser-agent")
+    # Make executable
+    os.chmod('dist/browser-agent-arm64', 0o755)
+    
+    print("\nBuild completed! Executable is available at: dist/browser-agent-arm64")
 
 if __name__ == '__main__':
     try:

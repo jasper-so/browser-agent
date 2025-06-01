@@ -8,36 +8,40 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [arm64]
+        include:  
+          - os: ubuntu-latest  
+            arch: arm64  
+            target: ubuntu-arm64  
+
+    runs-on: ${{ matrix.os }} 
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      - uses: actions/setup-python@v5  
+        with:  
+          python-version: "3.11"
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - uses: astral-sh/setup-uv@v5
 
-      - name: Build executable for ${{ matrix.architecture }}
-        run: |
-          docker run --rm --platform linux/${{ matrix.architecture }} \
-            -v ${{ github.workspace }}:/app \
-            -w /app python:3.11 bash -c "\
-              curl -LsSf https://astral.sh/uv/install.sh | sh && \
-              export PATH=\"/root/.local/bin:$PATH\" && \
-              uv pip install -e .[dev] && \
-              python build.py && \
-              cp dist/browser-agent /app/browser-agent-ubuntu-${{ matrix.architecture }}"
+      - name: Install dependencies  
+        run: |  
+          uv sync  
+          uv add pyinstaller  
+          uv add playwright  
+          uv run playwright install chromium  
+
+      - name: Build executable
+        run: python build.py
+        mv dist/browser-agent dist/browser-agent-${{ matrix.target }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: browser-agent-ubuntu-${{ matrix.architecture }}
-          path: browser-agent-ubuntu-${{ matrix.architecture }}
+          name: browser-agent-${{ matrix.target }}
+          path: dist/browser-agent-${{ matrix.target }}
           if-no-files-found: error
 
   release:
@@ -57,9 +61,7 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            artifacts/browser-agent-ubuntu-amd64/browser-agent-ubuntu-amd64
-            artifacts/browser-agent-ubuntu-arm64/browser-agent-ubuntu-arm64
+          files: artifacts/browser-agent-ubuntu-arm64/browser-agent-ubuntu-arm64
           generate_release_notes: true
           draft: false
           prerelease: false

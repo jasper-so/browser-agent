@@ -12,7 +12,7 @@ setup(
     ],
     extras_require={
         'dev': [
-            'pyinstaller',
+            'pyinstaller',  # Only needed for building the executable
         ],
     },
     entry_points={
@@ -31,5 +31,17 @@ setup(
         "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Development Status :: 4 - Beta",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "Topic :: Software Development :: Testing",
+        "Topic :: Software Development :: Libraries :: Python Modules",
     ],
+    # Build system requirements
+    setup_requires=["setuptools>=68.0.0", "wheel>=0.41.0"],
+    # Include package data
+    include_package_data=True,
+    package_data={
+        "browser_agent_cli": ["py.typed"],
+    },
 ) 
