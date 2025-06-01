@@ -6,7 +6,7 @@ A command-line tool for browser automation using browser-use.
 
 ### Download Pre-built Executable
 
-You can download pre-built executables from the [GitHub Releases](https://github.com/yourusername/browser-agent-cli/releases) page:
+You can download pre-built executables from the [GitHub Releases](https://github.com/neilxchen/browser-agent/releases) page:
 
 - For Linux: `browser-agent-linux`
 - For macOS: `browser-agent-macos`
