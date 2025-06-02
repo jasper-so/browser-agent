@@ -37,9 +37,8 @@ jobs:
               uv sync && \
               uv pip install shiv && \
               shiv \
-                -c cli \
+                -c browser-agent \
                 -o browser-agent \
-                -e browser_agent_cli.cli:main \
                 -r requirements.txt \
                 -p \"/usr/bin/env python3\" \
                 . && \
