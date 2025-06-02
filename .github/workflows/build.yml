@@ -35,14 +35,16 @@ jobs:
               uv venv .venv && \
               source .venv/bin/activate && \
               uv sync && \
-              uv pip install pyinstaller && \
-              pyinstaller \
-                --onedir \
-                --name=browser-agent \
-                --clean \
-                --add-data=browser_agent_cli:browser_agent_cli \
-                browser_agent_cli/cli.py && \
-                cp dist/browser-agent /app/browser-agent-${{ matrix.target }}"
+              uv pip install shiv && \
+              shiv \
+                -c cli \
+                -o browser-agent \
+                -e browser_agent_cli.cli:main \
+                -r requirements.txt \
+                -p \"/usr/bin/env python3\" \
+                . && \
+                cp browser-agent /app/browser-agent-${{ matrix.target }} && \
+                chmod +x /app/browser-agent-${{ matrix.target }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
