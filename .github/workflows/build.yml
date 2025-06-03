@@ -35,8 +35,6 @@ jobs:
               uv venv .venv && \
               source .venv/bin/activate && \
               uv sync && \
-              uv run playwright install-deps && \
-              uv run playwright install && \
               uv pip install shiv && \
               shiv \
                 -c browser-agent \
